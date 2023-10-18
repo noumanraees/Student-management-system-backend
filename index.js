@@ -21,7 +21,3 @@ app.listen(5000, async () => {
     await connectToDb()
     console.log("Server is running on port 5000")
 })
-
-
-//noumanraees901
-//uRETXGkMpg4EspHf
