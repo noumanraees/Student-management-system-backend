@@ -1,0 +1,33 @@
+{
+  "name": "student-management-system-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": " nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noumanraees/Student-management-system-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noumanraees/Student-management-system-backend/issues"
+  },
+  "homepage": "https://github.com/noumanraees/Student-management-system-backend#readme",
+  "dependencies": {
+    "axios": "^1.5.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3",
+    "moongose": "^1.0.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
+  }
+}
