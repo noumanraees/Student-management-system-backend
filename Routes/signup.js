@@ -3,6 +3,81 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 
 const router = express.Router()
+
+router.post('/changepassword', async(req,res)=>{
+    const{id,password,newPassword}=req.body;
+    if(!password || !newPassword){
+        return res.status(404).json({message: "Please Enter all Details"})
+    }
+    if(password.length<7){
+        return res.status(404).json({message: "Incorrect Password"})
+    }
+    if(newPassword.length<7){
+        return res.status(404).json({message: "Password length should be minimum 7 characters"})
+    }
+    try {
+        const response = await fetch(
+          "https://ap-south-1.aws.data.mongodb-api.com/app/data-wldsm/endpoint/data/v1/action/findOne",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apiKey:
+                "zruqIthJ2APAElTxdLMWUAe5E6DpGhojKVkIljGfdIUylZU4F96c9PngpuWVEbUq",
+            },
+            body: JSON.stringify({
+              dataSource: "Cluster0",
+              database: "SMS",
+              collection: "Users",
+              filter: {
+                _id: { $oid: id },
+              },
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!data.document)
+          return res.status(400).json({
+            error: "user not found",
+          });
+        const hashPassword = await bcrypt.hash(newPassword, 12);
+        if (!(await bcrypt.compare(password, data.document.password)))
+          return res.status(400).json({
+            error: "Password is incorrect",
+          });
+        const saveDoc = await fetch(
+          "https://ap-south-1.aws.data.mongodb-api.com/app/data-wldsm/endpoint/data/v1/action/updateOne",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apiKey:
+                "zruqIthJ2APAElTxdLMWUAe5E6DpGhojKVkIljGfdIUylZU4F96c9PngpuWVEbUq",
+            },
+            body: JSON.stringify({
+              dataSource: "Cluster0",
+              database: "SMS",
+              collection: "Users",
+              filter: { _id: { $oid: id } },
+              update: {
+                $set: {
+                  password: hashPassword,
+                },
+              },
+            }),
+          }
+        );
+        const result = await saveDoc.json();
+        if (!result.modifiedCount)
+          return res.status(400).json({
+            error: "Password updation failed.",
+          });
+        return res.status(200).json("Password updated succefully!");
+      } catch (error) {
+        console.log(error);
+      }
+      });
+
 router.post('/signup', async (req, res) => {
     const { name, email, password, userType } = req.body
     if (!name || !email || !password || !userType) {
